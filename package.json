@@ -1,0 +1,38 @@
+{
+  "name": "push-kontak",
+  "version": "1.3.0",
+  "description": "Broadcasting message whatsapp group.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rezadev05/push-kontak.git"
+  },
+  "keywords": [
+    "Bot",
+    "WhatsApp"
+  ],
+  "author": "rezadev05",
+  "license": "MIT",
+  "dependencies": {
+    "@adiwajshing/baileys": "github:WhiskeySockets/Baileys",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "@hapi/boom": "^10.0.0",
+    "awesome-phonenumber": "^2.64.0",
+    "axios": "^1.3.4",
+    "chalk": "^4.1.2",
+    "crypto": "^1.0.1",
+    "figlet": "^1.5.2",
+    "fs": "0.0.1-security",
+    "lodash": "^4.17.21",
+    "pino": "^7.0.5",
+    "qrcode-terminal": "^0.12.0",
+    "util": "^0.12.4"
+  },
+  "bugs": {
+    "url": "https://github.com/rezadev05/push-kontak/issues"
+  },
+  "homepage": "https://github.com/rezadev05/push-kontak#readme"
+}
