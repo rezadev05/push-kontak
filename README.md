@@ -5,7 +5,7 @@
 **_push-kontak dibuat menggunakan javascript native dan library [Bailyes⭐](https://github.com/WhiskeySockets/Baileys)_**
 
 <p align="center">
-<img width="" src="https://img.shields.io/github/repo-size/rezadev05/Push-Kontak?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
+<img width="" src="https://img.shields.io/github/repo-size/rezadev05/push-kontak?color=green&label=Repo%20Size&style=for-the-badge&logo=appveyor">
 </p>
 
 ## BACA DAHULU
