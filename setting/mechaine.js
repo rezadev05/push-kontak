@@ -373,7 +373,14 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
             if (m.isBaileys) return;
             if (!budy.toLowerCase()) return;
             if (argsLog || (isCmd2 && !m.isGroup)) {
-              // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
+              // client.sendReadReceipt(m.chat, m.sender, [m.key.id]);
+              const reactionMessage = {
+                react: {
+                  text: "❌",
+                  key: m.key,
+                },
+              };
+              client.sendMessage(sender, reactionMessage);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
                 color("command", "turquoise"),
@@ -381,7 +388,14 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
                 color("tidak tersedia", "turquoise")
               );
             } else if (argsLog || (isCmd2 && m.isGroup)) {
-              // client.sendReadReceipt(m.chat, m.sender, [m.key.id])
+              // client.sendReadReceipt(m.chat, m.sender, [m.key.id]);
+              const reactionMessage = {
+                react: {
+                  text: "❌",
+                  key: m.key,
+                },
+              };
+              client.sendMessage(sender, reactionMessage);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
                 color("command", "turquoise"),
