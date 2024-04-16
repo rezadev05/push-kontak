@@ -17,6 +17,7 @@
 ├• 📌 #pushid [idgroup|text]<br>
 ├• 📌 #savekontak [idgroup]<br>
 ├• 📌 #getidgc<br>
+├• 📌 #delayconf<br>
 └────────────>
 
 > Untuk mendapatkan <b>idgroup</b> kirim pesan <b>#getidgc</b> pastikan anda telah masuk ke group target agar anda dapat mengirim pesan keseluruh member group. Import file yang dihasilkan dari <b>#savekontak [idgroup]</b> untuk menyimpan kontak, update versi 1.3.0 kini mendukung broadcast menggunakan gambar dan <b>caption</b>.
