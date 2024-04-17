@@ -380,7 +380,7 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
                   key: m.key,
                 },
               };
-              client.sendMessage(sender, reactionMessage);
+              client.sendMessage(m.key.remoteJid, reactionMessage);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
                 color("command", "turquoise"),
@@ -395,7 +395,7 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
                   key: m.key,
                 },
               };
-              client.sendMessage(sender, reactionMessage);
+              client.sendMessage(m.key.remoteJid, reactionMessage);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
                 color("command", "turquoise"),
