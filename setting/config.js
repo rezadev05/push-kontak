@@ -1,7 +1,8 @@
 /**
- * Config file
- * Sesuaikan dengan kebutuhan anda
- * Support: wa.me/+6285742632270
+ * JANGAN MENGHASPUS KOMENTAR INI
+ * SERTAKAN PENGEMBANG DALAM PUBLIKASI APAPUN
+ * DONASI UNTUK APRESIASI PENGEMBANG
+ * TERIMKASIH SEMOGA BERMANFAAT
  */
 
 const fs = require("fs");
@@ -11,7 +12,7 @@ global.owner = ["6285742632270"];
 global.author = "https://github.com/rezadev05";
 global.packname = "push-kontak";
 global.sessionName = "WhatsApp-Session";
-global.versionbot = "1.3.0";
+global.versionbot = "24.12.01";
 global.mess = {
   wait: "Loading...",
   success: "Operation Sucessfull!",

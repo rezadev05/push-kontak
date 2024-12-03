@@ -1,34 +1,30 @@
 /**
- * Source Code By Reza
- * Don't Forget Smile
- * Thank You :)
+ * JANGAN MENGHASPUS KOMENTAR INI
+ * SERTAKAN PENGEMBANG DALAM PUBLIKASI APAPUN
+ * DONASI UNTUK APRESIASI PENGEMBANG
+ * TERIMKASIH SEMOGA BERMANFAAT
  */
+
+require("./config");
 
 const fs = require("fs");
 const util = require("util");
 const chalk = require("chalk");
-const crypto = require("crypto");
-const { getDelay } = require("../data/function");
+const moment = require("moment-timezone");
+const {
+  interval,
+  get_group_admin,
+  color,
+  pasrse_mention,
+  ucapan_waktu,
+  runtime,
+  create_serial,
+  hitung_estimasi_waktu,
+} = require("../data/function");
 
-const getGroupAdmins = (participants) => {
-  let admins = [];
-  for (let i of participants) {
-    i.admin === "superadmin"
-      ? admins.push(i.id)
-      : i.admin === "admin"
-      ? admins.push(i.id)
-      : "";
-  }
-  return admins || [];
-};
+const kontak = JSON.parse(fs.readFileSync("./data/kontak.json"));
+const signup = JSON.parse(fs.readFileSync("./data/user.json"));
 
-const contacts = JSON.parse(fs.readFileSync("./data/kontak.json"));
-
-const createSerial = (size) => {
-  return crypto.randomBytes(size).toString("hex").slice(0, size);
-};
-
-require("./config");
 module.exports = rezadevv = async (client, m, chatUpdate, store) => {
   try {
     var body =
@@ -51,9 +47,13 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
           m.message.listResponseMessage?.singleSelectReply.selectedRowId ||
           m.text
         : "";
-    var budy = typeof m.text == "string" ? m.text : "";
+
+    var body_type = typeof m.text == "string" ? m.text : "";
+
     // var prefix = /^[\\/!#.]/gi.test(body) ? body.match(/^[\\/!#.]/gi) : "/"
-    var prefix = /^[\\/!#.]/gi.test(body) ? body.match(/^[\\/!#.]/gi) : "/";
+    // var prefix = /^[\\/!#.]/gi.test(body) ? body.match(/^[\\/!#.]/gi) : "/";
+    var prefix = /^#/gi.test(body) ? "#" : "/";
+
     const isCmd2 = body.startsWith(prefix);
     const command = body
       .replace(prefix, "")
@@ -66,7 +66,7 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
       .map((v) => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net")
       .includes(m.sender);
     const args = body.trim().split(/ +/).slice(1);
-    const pushname = m.pushName || "No Name";
+    const pushname = m.pushName || "Unknown!?";
     const itsMe = m.sender == botNumber ? true : false;
     let text = (q = args.join(" "));
     const fatkuns = m.quoted || m;
@@ -82,46 +82,49 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
         : m;
     const mime = (quoted.msg || quoted).mimetype || "";
     const qmsg = quoted.msg || quoted;
-    const arg = budy.trim().substring(budy.indexOf(" ") + 1);
+    const arg = body_type.trim().substring(body_type.indexOf(" ") + 1);
     const arg1 = arg.trim().substring(arg.indexOf(" ") + 1);
 
     const from = m.chat;
     const reply = m.reply;
     const sender = m.sender;
     const mek = chatUpdate.messages[0];
-    const isContacts = contacts.includes(sender);
+    const isContacts = kontak.includes(sender);
+    const isUser = signup.includes(sender);
 
-    const color = (text, color) => {
-      return !color ? chalk.green(text) : chalk.keyword(color)(text);
-    };
-
-    // Group
+    //GROUP
     const groupMetadata = m.isGroup
       ? await client.groupMetadata(m.chat).catch((e) => {})
       : "";
     const groupName = m.isGroup ? groupMetadata.subject : "";
     const participants = m.isGroup ? await groupMetadata.participants : "";
-    const groupAdmins = m.isGroup ? await getGroupAdmins(participants) : "";
+    const groupAdmins = m.isGroup ? await get_group_admin(participants) : "";
     const isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false;
     const isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false;
 
-    // Push Message To Console
-    let argsLog = budy.length > 30 ? `${q.substring(0, 30)}...` : budy;
+    //TAMPILKAN PESAN KE CONSOLE
+    const argsLog =
+      body_type.length > 30 ? `${q.substring(0, 30)}...` : body_type;
+
+    if (isCmd2 && !isUser) {
+      signup.push(sender);
+      fs.writeFileSync("./data/user.json", JSON.stringify(signup, null, 2));
+    }
 
     if (isCmd2 && !m.isGroup) {
       console.log(
         chalk.black(chalk.bgWhite("[ PESAN ]")),
-        color(argsLog, "turquoise"),
-        chalk.magenta("From"),
-        chalk.green(pushname),
+        color(`${argsLog} |`, "turquoise"),
+        chalk.magenta("FROM |"),
+        chalk.green(`${pushname} |`),
         chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`)
       );
     } else if (isCmd2 && m.isGroup) {
       console.log(
         chalk.black(chalk.bgWhite("[ PESAN ]")),
-        color(argsLog, "turquoise"),
-        chalk.magenta("From"),
-        chalk.green(pushname),
+        color(`${argsLog} |`, "turquoise"),
+        chalk.magenta("FROM |"),
+        chalk.green(`${pushname} |`),
         chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`),
         chalk.blueBright("IN"),
         chalk.green(groupName)
@@ -133,141 +136,223 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
         case "menu":
         case "help":
           {
-            const reactionMessage = {
+            await client.sendMessage(sender, {
               react: {
                 text: "🕓",
                 key: m.key,
               },
-            };
-            await client.sendMessage(sender, reactionMessage);
-            text = `╭──❒ *All MENU BOT*\n├• 📌 ${prefix}pushkontak [text]\n├• 📌 ${prefix}pushid [idgroup|text]\n├• 📌 ${prefix}pushimg [idgroup|caption]\n├• 📌 ${prefix}savekontak [idgroup]\n├• 📌 ${prefix}getidgc\n├• 📌 ${prefix}delayconf\n└────────────>`;
+            });
+            text = `
+Hi, ${pushname} ${ucapan_waktu}👋
+
+╭─❒ 「 INFORMASI BOT 」 
+├ _Author : ${author}_
+├ _Packname : ${packname}_
+├ _Runtime : ${runtime(process.uptime())}_
+├ _Pengguna : ${signup.length}_
+╰❒
+
+╭──❒ *SEMUA MENU BOT*
+│
+├• *[ PUSH KONTAK ]*
+├• 📌 ${prefix}pushkontak [text]
+├• 📌 ${prefix}pushid [idgroup|text]
+├• 📌 ${prefix}pushimg [idgroup|caption]
+├• 📌 ${prefix}savekontak [idgroup]
+│
+├• *[ GROUP ]*
+├• 📌 ${prefix}inspeksi [link group]
+├• 📌 ${prefix}listgroup
+├• 📌 ${prefix}getidgroup
+│
+├• *[ KONFIGURASI ]*
+├• 📌 ${prefix}setinterval [interval]
+├• 📌 ${prefix}cekinterval
+└────────────>`;
             client.sendText(from, text, m);
           }
           break;
-        case "setdelay":
-        case "delayconf":
+        case "setinterval":
+        case "cekinterval":
           {
-            if (command === "delayconf") {
+            if (command === "cekinterval") {
               reply(
-                `Delay: [ ${getDelay()} ms ]\n\n_Sangat direkomendasikan menggunakan kecepatan *10000 ms* biar lambat asal selamat😊._`
+                `Interval ~ [ ${interval()} ms ]\n\nGunakan interval 10000 ms (direkomendasikan) untuk meminimalisir banned oleh WhatsApp❗`
               );
-            } else {
+            } else if (command === "setinterval") {
               if (!isCreator) return m.reply(mess.owner);
-              if (!text)
-                return m.reply(
-                  `Example ${
-                    prefix + command
-                  } 10000\n\n*_Rekomendasi Menggunakan Kecepatan 10000 (untuk 10 detik)!. Agar Terhindar Dari Suspend Pihak WhatsApp._*`
-                );
-              if (text < 10000) return m.reply("Setdelay minimum 10000!");
+              if (!text) return m.reply(`Contoh ${prefix + command} 10000`);
+              if (text < 10000)
+                return m.reply("Interval minimum adalah 10000❗");
               if (isNaN(text) || text <= 0) {
-                m.reply(
-                  "```Nilai delay tidak valid atau kurang dari sama dengan 0!```"
-                );
+                m.reply("Nilai interval tidak valid :(");
               } else {
-                let delayObject = { delay: text };
-                let delayArray = [];
+                let interval_object = { interval: text };
+                let interval_array = [];
 
                 try {
-                  delayArray = JSON.parse(fs.readFileSync("./data/delay.json"));
+                  interval_array = JSON.parse(
+                    fs.readFileSync("./data/delay.json")
+                  );
                 } catch (error) {
-                  console.error(`Terjadi Kesalahan: ${error}`);
+                  console.error(error);
                 }
 
-                const existingIndex = delayArray.findIndex(
+                const index_ada = interval_array.findIndex(
                   (item) => item.delay
                 );
 
-                if (existingIndex !== -1) {
-                  delayArray[existingIndex].delay = text;
+                if (index_ada !== -1) {
+                  interval_array[index_ada].delay = text;
                 } else {
-                  delayArray.push(delayObject);
+                  interval_array.push(interval_object);
                 }
 
                 fs.writeFileSync(
-                  "./data/delay.json",
-                  JSON.stringify(delayArray, null, 2)
+                  "./data/interval.json",
+                  JSON.stringify(interval_array, null, 2)
                 );
-                m.reply(`*_Sukses Setting Delay ${text}_*`);
+                m.reply(`Sukses set interval ~ [ ${text} ms ]`);
               }
             }
+          }
+          break;
+        case "listgroup":
+          {
+            if (!isCreator) return m.reply(mess.owner);
+            try {
+              //MENGAMBIL SEMUA GROUP
+              const groups = await client.groupFetchAllParticipating();
+              const groupList = Object.values(groups).map((group) => ({
+                id: group.id,
+                subject: group.subject,
+                memberCount: group.participants.length,
+              }));
+
+              //FORMAT HASIL MENJADI STRING
+              if (groupList.length === 0) {
+                return m.reply("Tidak ditemukan group apapun :(");
+              }
+
+              let groupInfo = "「 DAFTAR SELURUH GRUP 」\n";
+              groupList.forEach((group, index) => {
+                groupInfo += `
+✨ Nama Group : ${group.subject}
+🪪 ID Group : ${group.id}
+👥 Total Member : ${group.memberCount}\n`;
+              });
+
+              m.reply(groupInfo);
+            } catch (err) {
+              m.reply(`Terjadi kesalahan: ${err.message}`);
+            }
+          }
+          break;
+        case "inspeksi":
+          {
+            if (!isCreator) return m.reply(mess.owner);
+            if (!args[0]) return m.reply("```Link Not Found```");
+            let linknya = args.join(" ");
+            let url_obj = linknya.split("https://chat.whatsapp.com/")[1];
+            if (!url_obj) return m.reply("```Link Invalid```");
+            m.reply("Sedang mengecek link...");
+            client
+              .query({
+                tag: "iq",
+                attrs: {
+                  type: "get",
+                  xmlns: "w:g2",
+                  to: "@g.us",
+                },
+                content: [{ tag: "invite", attrs: { code: url_obj } }],
+              })
+              .then(async (res) => {
+                teks = `「 Group Link Inspected 」\n\n▸ _Group Name_ : *_${
+                  res.content[0].attrs.subject
+                    ? res.content[0].attrs.subject
+                    : "undefined"
+                }_*\n▸ _Desc Change_ : *_${
+                  res.content[0].attrs.s_t
+                    ? moment(res.content[0].attrs.s_t * 1000)
+                        .tz("Asia/Jakarta")
+                        .format("DD-MM-YYYY, HH:mm:ss")
+                    : "undefined"
+                }_*\n▸ _Group Creator_ : *_${
+                  res.content[0].attrs.creator
+                    ? "@" + res.content[0].attrs.creator.split("@")[0]
+                    : "undefined"
+                }_*\n▸ _Group Made_ : *_${
+                  res.content[0].attrs.creation
+                    ? moment(res.content[0].attrs.creation * 1000)
+                        .tz("Asia/Jakarta")
+                        .format("DD-MM-YYYY, HH:mm:ss")
+                    : "undefined"
+                }_*\n▸ _Member Length_ : *_${
+                  res.content[0].attrs.size
+                    ? res.content[0].attrs.size
+                    : "undefined"
+                }_*\n▸ _ID_  : *_${
+                  res.content[0].attrs.id
+                    ? res.content[0].attrs.id
+                    : "undefined"
+                }_*`;
+                try {
+                  ppgroup = await client.profilePictureUrl(
+                    res.content[0].attrs.id + "@g.us",
+                    "image"
+                  );
+                } catch {
+                  ppgroup = "https://telegra.ph/file/95670d63378f7f4210f03.png";
+                }
+                client.sendFileUrl(from, ppgroup, "", m, {
+                  caption: teks,
+                  mentions: await pasrse_mention(teks),
+                });
+              });
           }
           break;
         case "pushkontak":
           {
-            if (!text) return m.reply(`Example ${prefix}${command} Hello`);
+            if (!text) return m.reply(`Contoh ${prefix}${command} Hello`);
             if (!isCreator) return m.reply(mess.owner);
             if (!m.isGroup) return m.reply(mess.group);
             if (!isBotAdmins) return m.reply(mess.botAdmin);
             if (!isAdmins) throw m.reply(mess.admin);
-            let get = await participants
+            let get_participant_group = await participants
               .filter((v) => v.id.endsWith(".net"))
               .map((v) => v.id);
-            let count = get.length;
-            let sentCount = 0;
-            m.reply("*_Sedang Push Kontak..._*");
-            for (let i = 0; i < get.length; i++) {
-              setTimeout(function () {
-                client.sendMessage(get[i], { text: text });
-                count--;
-                sentCount++;
-                if (count === 0) {
-                  m.reply(
-                    `*_Berhasil Push Kontak:_*\n*_Jumlah Pesan Terkirim: ${sentCount}_*`
+
+            let hitung = get_participant_group.length;
+            let hitung_pengiriman = 0;
+
+            const estimasi = hitung_estimasi_waktu(hitung, interval());
+
+            m.reply(
+              `Sedang mengirm pesan...
+
+Estimasi ~ [ ${estimasi.menit} menit ${estimasi.detik} ]
+Total Member ~ [ ${get_participant_group.length} ]`
+            );
+            for (let i = 0; i < get_participant_group.length; i++) {
+              try {
+                await new Promise((resolve) => setTimeout(resolve, interval()));
+                await client.sendMessage(get_participant_group[i], {
+                  text: text,
+                });
+                hitung--;
+                hitung_pengiriman++;
+
+                if (hitung === 0)
+                  return m.reply(
+                    `*[ SUKSES MENGIRIM PESAN ]*
+✅ Pesan terkirim ~ ${hitung_pengiriman}`
                   );
-                }
-              }, i * getDelay());
-            }
-          }
-          break;
-        case "pushimg":
-          {
-            if (!isCreator) return m.reply(mess.owner);
-            let idgc = text.split("|")[0];
-            let caption = text.split("|")[1];
-            if (!idgc && !caption)
-              return m.reply(`Example: ${prefix + command} idgc|pesan`);
-            if (/image/.test(mime)) {
-              let media = await quoted.download();
-              let metaDATA = await client.groupMetadata(idgc).catch((e) => {
-                m.reply(e);
-              });
-              let getDATA = await metaDATA.participants
-                .filter((v) => v.id.endsWith(".net"))
-                .map((v) => v.id);
-              let count = getDATA.length;
-              let sentCount = 0;
-              const reactionMessage = {
-                react: {
-                  text: "🕓", // use an empty string to remove the reaction
-                  key: m.key,
-                },
-              };
-              await client.sendMessage(sender, reactionMessage);
-              m.reply("*_Sedang Push Img..._*");
-              for (let i = 0; i < getDATA.length; i++) {
-                setTimeout(function () {
-                  client.sendImage(getDATA[i], media, caption);
-                  count--;
-                  sentCount++;
-                  if (count === 0) {
-                    const reactionMessage = {
-                      react: {
-                        text: "✅", // use an empty string to remove the reaction
-                        key: m.key,
-                      },
-                    };
-                    client.sendMessage(sender, reactionMessage);
-                    m.reply(
-                      `*_Semua pesan telah dikirim!_*:\n*_Jumlah pesan terkirim:_* *_${sentCount}_*`
-                    );
-                  }
-                }, i * getDelay());
+              } catch (error) {
+                console.log(
+                  `Gagal mengirim ke ${get_participant_group[i]}:`,
+                  error
+                );
               }
-            } else {
-              m.reply(
-                `Reply gambar dengan caption ${prefix}pushimg idgc|caption`
-              );
             }
           }
           break;
@@ -277,27 +362,128 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
             let idgc = text.split("|")[0];
             let pesan = text.split("|")[1];
             if (!idgc && !pesan)
-              return m.reply(`Example: ${prefix + command} idgc|pesan`);
-            let metaDATA = await client.groupMetadata(idgc).catch((e) => {
-              m.reply(e);
-            });
-            let getDATA = await metaDATA.participants
+              return m.reply(`Contoh: ${prefix + command} idgc|pesan`);
+            let group_meta_data = await client
+              .groupMetadata(idgc)
+              .catch((e) => {
+                m.reply(e);
+              });
+            let get_group_meta_data = await group_meta_data.participants
               .filter((v) => v.id.endsWith(".net"))
               .map((v) => v.id);
-            let count = getDATA.length;
-            let sentCount = 0;
-            m.reply("*_Sedang Push ID..._*");
-            for (let i = 0; i < getDATA.length; i++) {
-              setTimeout(function () {
-                client.sendMessage(getDATA[i], { text: pesan });
-                count--;
-                sentCount++;
-                if (count === 0) {
-                  m.reply(
-                    `*_Semua pesan telah dikirim!_*:\n*_Jumlah pesan terkirim:_* *_${sentCount}_*`
+
+            let hitung = get_group_meta_data.length;
+            let hitung_pengiriman = 0;
+
+            const estimasi = hitung_estimasi_waktu(hitung, interval());
+
+            m.reply(
+              `Sedang mengirim pesan...
+
+*[ INFORMASI GROUP ]*          
+------------------------------------
+🔴 _Nama Group: *${group_meta_data.subject}*_
+🔴 _Total Member: *${get_group_meta_data.length}*_
+🔴 _Estimasi : *${estimasi.menit} menit ${estimasi.detik} detik*_
+------------------------------------`
+            );
+            for (let i = 0; i < get_group_meta_data.length; i++) {
+              try {
+                await new Promise((resolve) => setTimeout(resolve, interval()));
+                await client.sendMessage(get_group_meta_data[i], {
+                  text: pesan,
+                });
+                hitung--;
+                hitung_pengiriman++;
+
+                if (hitung === 0)
+                  return m.reply(
+                    `*[ SUKSES MENGIRIM PESAN ]*
+✅ Pesan terkirim ~ ${hitung_pengiriman}`
+                  );
+              } catch (error) {
+                console.log(
+                  `Gagal mengirim ke ${get_group_meta_data[i]}:`,
+                  error
+                );
+              }
+            }
+          }
+          break;
+        case "pushimg":
+          {
+            if (!isCreator) return m.reply(mess.owner);
+            let idgc = text.split("|")[0];
+            let caption = text.split("|")[1];
+
+            if (!idgc || !caption)
+              return m.reply(`Contoh: ${prefix + command} idgc|pesan`);
+
+            if (/image/.test(mime)) {
+              let media = await quoted.download();
+              let group_meta_data = await client
+                .groupMetadata(idgc)
+                .catch((e) => {
+                  m.reply(e);
+                  return null;
+                });
+
+              let get_group_meta_data = group_meta_data.participants
+                .filter((v) => v.id.endsWith(".net"))
+                .map((v) => v.id);
+
+              let hitung = get_group_meta_data.length;
+              let hitung_pengiriman = 0;
+
+              const estimasi = hitung_estimasi_waktu(hitung, interval());
+
+              await client.sendMessage(sender, {
+                react: {
+                  text: "🕓",
+                  key: m.key,
+                },
+              });
+
+              m.reply(
+                `Sedang mengirim pesan...
+
+*[ INFORMASI GROUP ]*          
+------------------------------------
+🔴 _Nama Group: *${group_meta_data.subject}*_
+🔴 _Total Member: *${get_group_meta_data.length}*_
+🔴 _Estimasi : *${estimasi.menit} menit ${estimasi.detik} detik*_
+------------------------------------`
+              );
+
+              for (let i = 0; i < get_group_meta_data.length; i++) {
+                try {
+                  await new Promise((resolve) =>
+                    setTimeout(resolve, interval())
+                  );
+                  await client.sendImage(
+                    get_group_meta_data[i],
+                    media,
+                    caption
+                  );
+                  hitung--;
+                  hitung_pengiriman++;
+
+                  if (hitung === 0)
+                    return m.reply(
+                      `*[ SUKSES MENGIRIM PESAN ]*
+✅ Pesan terkirim ~ ${hitung_pengiriman}`
+                    );
+                } catch (error) {
+                  console.log(
+                    `Gagal mengirim ke ${get_group_meta_data[i]}:`,
+                    error
                   );
                 }
-              }, i * getDelay());
+              }
+            } else {
+              m.reply(
+                `Reply gambar dengan caption ${prefix}pushimg idgc|caption`
+              );
             }
           }
           break;
@@ -305,7 +491,7 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
           {
             if (!isCreator) return m.reply(mess.owner);
             if (m.isGroup) return reply(mess.private);
-            if (!text) return reply(`Exampale: ${prefix + command} idgroup`);
+            if (!text) return reply(`Contoh: ${prefix + command} idgroup`);
             const groupMetadataa = !m.isGroup
               ? await client.groupMetadata(`${text}`).catch((e) => {
                   reply(e);
@@ -320,17 +506,17 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
             reply(mess.wait);
             for (let member of getdata) {
               if (isContacts) return;
-              contacts.push(member);
-              fs.writeFileSync("./data/kontak.json", JSON.stringify(contacts));
+              kontak.push(member);
+              fs.writeFileSync("./data/kontak.json", JSON.stringify(kontak));
             }
             try {
-              const uniqueContacts = [...new Set(contacts)];
+              const uniqueContacts = [...new Set(kontak)];
               const vcardContent = uniqueContacts
                 .map((contact) => {
                   const vcard = [
                     "BEGIN:VCARD",
                     "VERSION:3.0",
-                    `FN:WA[${createSerial(2)}] ${contact.split("@")[0]}`,
+                    `FN:WA[${create_serial(2)}] ${contact.split("@")[0]}`,
                     `TEL;type=CELL;type=VOICE;waid=${contact.split("@")[0]}:+${
                       contact.split("@")[0]
                     }`,
@@ -348,59 +534,52 @@ module.exports = rezadevv = async (client, m, chatUpdate, store) => {
                 from,
                 {
                   document: fs.readFileSync("./data/kontak.vcf"),
-                  fileName: "contacts.vcf",
-                  caption: `_*${mess.success}*_\n\n_Group:_ *_${groupMetadataa.subject}_*`,
+                  fileName: "kontak.vcf",
+                  caption: `_*${mess.success}*_\n\n_Group:_ *_${groupMetadataa.subject}_*\n_Total Member:_ *_${participants.length}_*`,
                   mimetype: "text/vcard",
                 },
                 { quoted: m }
               );
               fs.writeFileSync("./data/kontak.vcf", "");
-              contacts.splice(0, contacts.length);
-              fs.writeFileSync("./data/kontak.json", JSON.stringify(contacts));
+              kontak.splice(0, kontak.length);
+              fs.writeFileSync("./data/kontak.json", JSON.stringify(kontak));
             }
           }
           break;
-        case "getidgc":
-          {
-            if (!isCreator) return reply(mess.owner);
-            if (!m.isGroup) return reply(mess.group);
-            reply(from);
-          }
-          break;
         default: {
-          if (isCmd2 && budy.toLowerCase() != undefined) {
+          if (isCmd2 && body_type.toLowerCase() != undefined) {
             if (m.chat.endsWith("broadcast")) return;
             if (m.isBaileys) return;
-            if (!budy.toLowerCase()) return;
+            if (!body_type.toLowerCase()) return;
             if (argsLog || (isCmd2 && !m.isGroup)) {
               // client.sendReadReceipt(m.chat, m.sender, [m.key.id]);
-              const reactionMessage = {
+              await client.sendMessage(m.key.remoteJid, {
                 react: {
                   text: "❌",
                   key: m.key,
                 },
-              };
-              client.sendMessage(m.key.remoteJid, reactionMessage);
+              });
+              client.sendText(m.key.remoteJid, "Perintah tidak tersedia :(", m);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
-                color("command", "turquoise"),
-                color(`${prefix}${command}`, "turquoise"),
-                color("tidak tersedia", "turquoise")
+                color("PERINTAH |", "turquoise"),
+                color(`${prefix}${command} |`, "turquoise"),
+                color("TIDAK TERSEDIA", "turquoise")
               );
             } else if (argsLog || (isCmd2 && m.isGroup)) {
               // client.sendReadReceipt(m.chat, m.sender, [m.key.id]);
-              const reactionMessage = {
+              client.sendMessage(m.key.remoteJid, {
                 react: {
                   text: "❌",
                   key: m.key,
                 },
-              };
-              client.sendMessage(m.key.remoteJid, reactionMessage);
+              });
+              client.sendText(m.key.remoteJid, "Perintah tidak tersedia :(", m);
               console.log(
                 chalk.black(chalk.bgRed("[ ERROR ]")),
-                color("command", "turquoise"),
-                color(`${prefix}${command}`, "turquoise"),
-                color("tidak tersedia", "turquoise")
+                color("PERINTAH |", "turquoise"),
+                color(`${prefix}${command} |`, "turquoise"),
+                color("TIDAK TERSEDIA", "turquoise")
               );
             }
           }

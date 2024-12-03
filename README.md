@@ -10,17 +10,34 @@
 
 ## BACA DAHULU
 
-╭──❒ <b>All MENU BOT</b><br>
+╭──❒ <b></b>SEMUA MENU BOT</b><br>
+│<br>
+├• <b>[ PUSH KONTAK ]</b><br>
 ├• 📌 #pushkontak [text]<br>
-├• 📌 #setdelay [time]<br>
-├• 📌 #pushimg [idgc|caption](Reply Image)<br>
 ├• 📌 #pushid [idgroup|text]<br>
+├• 📌 #pushimg [idgroup|caption]<br>
 ├• 📌 #savekontak [idgroup]<br>
-├• 📌 #getidgc<br>
-├• 📌 #delayconf<br>
+│<br>
+├• <b>[ GROUP ]</b><br>
+├• 📌 #inspeksi [link group]<br>
+├• 📌 #listgroup<br>
+├• 📌 #getidgroup<br>
+│<br>
+├• <b>[ KONFIGURASI ]</b><br>
+├• 📌 #setinterval [interval]<br>
+├• 📌 #cekinterval<br>
 └────────────>
 
-> Untuk mendapatkan <b>idgroup</b> kirim pesan <b>#getidgc</b> pastikan anda telah masuk ke group target agar anda dapat mengirim pesan keseluruh member group. Import file yang dihasilkan dari <b>#savekontak [idgroup]</b> untuk menyimpan kontak, update versi 1.3.0 kini mendukung broadcast menggunakan gambar dan <b>caption</b>.
+> Untuk mendapatkan <b>idgroup</b> kirim pesan <b>#getidgc</b> pastikan anda telah masuk ke group target agar anda dapat mengirim pesan keseluruh member group. Import file yang dihasilkan dari <b>#savekontak [idgroup]</b> untuk menyimpan kontak, update versi 24.12.01 kini mendukung broadcast menggunakan gambar dan <b>caption</b>.
+
+> Log Update Version ⬇️✨<br>
+> -----------------------------------------<br>
+> Version <b>12.24.01</b><br>
+> ➡️ Update crypto dengan ("node:crypto")<br>
+> ➡️ Perbaikan interval pengiriman<br>
+> ➡️ ADD #inspeksi [link group]<br>
+> ➡️ ADD #listgroup<br>
+> -----------------------------------------<br>
 
 ## CATATAN (PERHATIAN)
 
@@ -35,7 +52,7 @@ global.owner = ["6285742632270"];
 global.author = "https://github.com/rezadev05";
 global.packname = "push-kontak";
 global.sessionName = "WhatsApp-Session";
-global.versionbot = "1.3.0";
+global.versionbot = "24.12.01";
 ```
 
 ## UNTUK PENGGUNA WINDOWS 💻
@@ -70,7 +87,7 @@ $ npm start
 
 - [`rezadev05`](https://github.com/rezadev05)
 
-`Thanks to all who have participated in the development of this script`
+`Saya ucapkan terimakasih kepda seluruh kontributor yang membantu pembuatan kode sumber ini`
 
 ## DONASI
 

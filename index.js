@@ -1,7 +1,8 @@
 /**
- * Source Code By Reza
- * Don't Forget Smile
- * Thank You :)
+ * JANGAN MENGHASPUS KOMENTAR INI
+ * SERTAKAN PENGEMBANG DALAM PUBLIKASI APAPUN
+ * DONASI UNTUK APRESIASI PENGEMBANG
+ * TERIMKASIH SEMOGA BERMANFAAT
  */
 
 require("./setting/config");
@@ -25,7 +26,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
-const { getDelay } = require("./data/function");
+const { interval } = require("./data/function");
 
 const store = makeInMemoryStore({
   logger: pino().child({ level: "silent", stream: "store" }),
@@ -240,7 +241,7 @@ async function startEza() {
         return;
       if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
       m = smsg(client, mek, store);
-      require("./setting/mechaine")(client, m, chatUpdate, store);
+      require("./setting/mechaine.js")(client, m, chatUpdate, store);
     } catch (err) {
       console.log(err);
     }
@@ -373,10 +374,10 @@ async function startEza() {
     } else if (connection === "open") {
       const botNumber = await client.decodeJid(client.user.id);
       console.log(color("---------------------------------------", "cyan"));
-      console.log(color("Created: https://github.com/rezadev05", "green"));
-      console.log(color("Donate: ↘", "yellow"));
-      console.log(color("Saweria: https://saweria.co/rezadev05", "yellow"));
-      console.log(color("Bitcoin: http://surl.li/sqoct", "yellow"));
+      console.log(color("Created  : https://github.com/rezadev05", "green"));
+      console.log(color("Donate   : ↘", "yellow"));
+      console.log(color("Saweria  : https://saweria.co/rezadev05", "yellow"));
+      console.log(color("Bitcoin  : http://surl.li/sqoct", "yellow"));
       console.log(
         color(
           `Kirim #menu ke https://wa.me/${botNumber.replace(
@@ -387,7 +388,18 @@ async function startEza() {
       );
       console.log(color("---------------------------------------", "cyan"));
       client.sendMessage(`${owner}@s.whatsapp.net`, {
-        text: `*╭──❒ 「 DETAIL KONFIGURASI 」*\n├• *_Owner:_* _${owner}_\n├• *_Author:_* _${author}_\n├• *_Session:_* _${sessionName}_\n├• *_Version:_* _${versionbot}_\n├• *_Delay:_* _${getDelay()} ms_\n╰❑\n\n*_${botNumber}_*`,
+        text: `
+╭──❒ *「 DETAIL KONFIGURASI 」*
+│
+├• *_Owner:_* _${owner}_
+├• *_Author:_* _${author}_
+├• *_Session:_* _${sessionName}_
+├• *_Version:_* _${versionbot}_
+├• *_Interval:_* _${interval()} ms_
+│
+╰❑
+
+*_${botNumber}_*`,
       });
     }
     // console.log('Connected...', update)
@@ -407,6 +419,76 @@ async function startEza() {
     }
 
     return buffer;
+  };
+
+  /**
+   *
+   * @param {*} jid
+   * @param {*} url
+   * @param {*} caption
+   * @param {*} quoted
+   * @param {*} options
+   */
+  client.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
+    let mime = "";
+    let res = await axios.head(url);
+    mime = res.headers["content-type"];
+    if (mime.split("/")[1] === "gif") {
+      return client.sendMessage(
+        jid,
+        {
+          video: await getBuffer(url),
+          caption: caption,
+          gifPlayback: true,
+          ...options,
+        },
+        { quoted: quoted, ...options }
+      );
+    }
+    let type = mime.split("/")[0] + "Message";
+    if (mime === "application/zip") {
+      return client.sendMessage(
+        jid,
+        {
+          document: await getBuffer(url),
+          mimetype: "application/zip",
+          caption: caption,
+          ...options,
+        },
+        { quoted: quoted, ...options }
+      );
+    }
+    if (mime.split("/")[0] === "image") {
+      return client.sendMessage(
+        jid,
+        { image: await getBuffer(url), caption: caption, ...options },
+        { quoted: quoted, ...options }
+      );
+    }
+    if (mime.split("/")[0] === "video") {
+      return client.sendMessage(
+        jid,
+        {
+          video: await getBuffer(url),
+          caption: caption,
+          mimetype: "video/mp4",
+          ...options,
+        },
+        { quoted: quoted, ...options }
+      );
+    }
+    if (mime.split("/")[0] === "audio") {
+      return client.sendMessage(
+        jid,
+        {
+          audio: await getBuffer(url),
+          caption: caption,
+          mimetype: "audio/mpeg",
+          ...options,
+        },
+        { quoted: quoted, ...options }
+      );
+    }
   };
 
   const getBuffer = async (url, options) => {
