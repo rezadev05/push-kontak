@@ -28,7 +28,7 @@
 ├• 📌 #cekinterval<br>
 └────────────>
 
-> Untuk mendapatkan <b>idgroup</b> kirim pesan <b>#getidgc</b> pastikan anda telah masuk ke group target agar anda dapat mengirim pesan keseluruh member group. Import file yang dihasilkan dari <b>#savekontak [idgroup]</b> untuk menyimpan kontak, update versi 24.12.01 kini mendukung broadcast menggunakan gambar dan <b>caption</b>.
+> Untuk mendapatkan <b>idgroup</b> kirim pesan <b>#getidgroup / #listgroup</b> pastikan anda telah masuk ke group target agar anda dapat mengirim pesan keseluruh member group. Import file yang dihasilkan dari <b>#savekontak [idgroup]</b> untuk menyimpan kontak, update versi 24.12.01 kini mendukung broadcast menggunakan gambar dan <b>caption</b>.
 
 > Log Update Version ⬇️✨<br>
 > -----------------------------------------<br>
