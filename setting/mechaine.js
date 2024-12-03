@@ -311,6 +311,14 @@ Hi, ${pushname} ${ucapan_waktu}👋
               });
           }
           break;
+        case "getidgroup":
+          {
+            if (!isCreator) return m.reply(mess.owner);
+            if (!m.isGroup) return m.reply(mess.group);
+
+            m.reply(from);
+          }
+          break;
         case "pushkontak":
           {
             if (!text) return m.reply(`Contoh ${prefix}${command} Hello`);
@@ -330,7 +338,7 @@ Hi, ${pushname} ${ucapan_waktu}👋
             m.reply(
               `Sedang mengirm pesan...
 
-Estimasi ~ [ ${estimasi.menit} menit ${estimasi.detik} ]
+Estimasi ~ [ ${estimasi.menit} menit ${estimasi.detik} detik ]
 Total Member ~ [ ${get_participant_group.length} ]`
             );
             for (let i = 0; i < get_participant_group.length; i++) {
