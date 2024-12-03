@@ -32,7 +32,7 @@
 
 > Log Update Version ⬇️✨<br>
 > -----------------------------------------<br>
-> Version <b>12.24.01</b><br>
+> Version <b>24.12.01</b><br>
 > ➡️ Update crypto dengan ("node:crypto")<br>
 > ➡️ Perbaikan interval pengiriman<br>
 > ➡️ ADD #inspeksi [link group]<br>
