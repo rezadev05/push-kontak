@@ -7,7 +7,6 @@
 
 require("./setting/config");
 const {
-  default: EzaConnect,
   useMultiFileAuthState,
   DisconnectReason,
   fetchLatestBaileysVersion,
@@ -17,6 +16,7 @@ const {
   proto,
   getContentType,
   Browsers,
+  makeWASocket,
 } = require("@adiwajshing/baileys");
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
@@ -26,7 +26,9 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
+const readline = require("readline");
 const { interval } = require("./data/function");
+const { resolve } = require("path/posix");
 
 const store = makeInMemoryStore({
   logger: pino().child({ level: "silent", stream: "store" }),
@@ -179,6 +181,18 @@ function smsg(conn, m, store) {
   return m;
 }
 
+const usePairingCode = true;
+
+const question = (text) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  return new Promise((resolve) => {
+    rl.question(text, resolve);
+  });
+};
+
 async function startEza() {
   const { state, saveCreds } = await useMultiFileAuthState(
     `./${sessionName ? sessionName : "session"}`
@@ -197,34 +211,22 @@ async function startEza() {
     )
   );
 
-  const client = EzaConnect({
+  const client = makeWASocket({
     logger: pino({ level: "silent" }),
-    printQRInTerminal: true,
-    browser: Browsers.macOS("Desktop"),
-    patchMessageBeforeSending: (message) => {
-      const requiresPatch = !!(
-        message.buttonsMessage ||
-        message.templateMessage ||
-        message.listMessage
-      );
-      if (requiresPatch) {
-        message = {
-          viewOnceMessage: {
-            message: {
-              messageContextInfo: {
-                deviceListMetadataVersion: 2,
-                deviceListMetadata: {},
-              },
-              ...message,
-            },
-          },
-        };
-      }
-      return message;
-    },
+    printQRInTerminal: !usePairingCode,
+    browser: ["Ubuntu", "Chrome", "20.0.04"],
     auth: state,
   });
 
+  if (usePairingCode && !client.authState.creds.registered) {
+    const phoneNumber = await question(
+      "Masukkan nomor hp wjib di awali (62): "
+    );
+    const pairCode = await client.requestPairingCode(phoneNumber.trim());
+    console.log(
+      `${chalk.yellow("Your Pairing Code:")} ${chalk.greenBright(pairCode)}`
+    );
+  }
   store.bind(client.ev);
 
   client.ev.on("messages.upsert", async (chatUpdate) => {
