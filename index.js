@@ -220,7 +220,7 @@ async function startEza() {
 
   if (usePairingCode && !client.authState.creds.registered) {
     const phoneNumber = await question(
-      "Masukkan nomor hp wjib di awali (62): "
+      "Masukkan nomor hp (wjib di awali 62): "
     );
     const pairCode = await client.requestPairingCode(phoneNumber.trim());
     console.log(
