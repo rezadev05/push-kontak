@@ -48,7 +48,7 @@
 - Konfigurasi Owner Pada `./setting/config.js`
 
 ```ts
-global.owner = ["6285742632270"];
+global.owner = ["6285362585351"];
 global.author = "https://github.com/rezadev05";
 global.packname = "push-kontak";
 global.sessionName = "WhatsApp-Session";
