@@ -8,13 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rezadev05/push-kontak.git"
+    "url": "git+https://github.com/haikal2008/push-kontak.git"
   },
   "keywords": [
     "Bot",
     "WhatsApp"
   ],
-  "author": "rezadev05",
+  "author": "haikal2008",
   "license": "MIT",
   "dependencies": {
     "@adiwajshing/baileys": "github:WhiskeySockets/Baileys",
@@ -33,7 +33,7 @@
     "util": "^0.12.4"
   },
   "bugs": {
-    "url": "https://github.com/rezadev05/push-kontak/issues"
+    "url": "https://github.com/haikal2008/push-kontak/issues"
   },
-  "homepage": "https://github.com/rezadev05/push-kontak#readme"
+  "homepage": "https://github.com/haikal2008/push-kontak#readme"
 }
